@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="ThemeHouse_MediaBlock" title="[⌂] Media Block" version_string="1.0.1" version_id="1447261019" url="http://xf.themehouse.io/" install_callback_class="ThemeHouse_Install" install_callback_method="install" uninstall_callback_class="ThemeHouse_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates/>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="ThemeHouse_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="ThemeHouse_MediaBlock_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="ThemeHouse_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_MediaBlock_Listener_LoadClass" callback_method="loadClassHelper" active="0" hint="ThemeHouse_Tabs_ViewPublic_Helper_Tabs" description="ThemeHouse_Tabs_ViewPublic_Helper_Tabs (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_helper" execute_order="10" callback_class="ThemeHouse_MediaBlock_Listener_LoadClass" callback_method="loadClassHelper" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="th_mediaBlock" display_order="2000" debug_only="0"/>
+    <option option_id="th_mediaBlock_maxItems" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>2</default_value>
+      <edit_format_params/>
+      <sub_options/>
+      <relation group_id="th_mediaBlock" display_order="1"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="option_group_th_mediaBlock" version_id="1416048494" version_string="1.0.0"><![CDATA[Media Block by ThemeHouse]]></phrase>
+    <phrase title="option_group_th_mediaBlock_description" version_id="1416048494" version_string="1.0.0"><![CDATA[Options for the Media Block by ThemeHouse add-on.]]></phrase>
+    <phrase title="option_th_mediaBlock_maxItems" version_id="1416048494" version_string="1.0.0"><![CDATA[Number of images visible in the slider]]></phrase>
+    <phrase title="option_th_mediaBlock_maxItems_explain" version_id="1416048494" version_string="1.0.0"><![CDATA[]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates/>
+  <public_template_modifications>
+    <modification template="footer" modification_key="th_copyrightNotice_mediaBlock" description="Copyright notice for [⌂] Media Block" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[ThemeHouse_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="th_tabs_after_tabs" modification_key="th_tabsAfter_mediaBlock" description="Adds media block to replace tabs." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#$#]]></find>
+      <replace><![CDATA[<xen:if is="{$tabsMediaIds}">
+	<xen:include template="xengallery_media_block">
+		<xen:set var="$mediaIds">{$tabsMediaIds}</xen:set>
+		<xen:set var="$blockId">tabsMediaBlock</xen:set>
+		<xen:set var="$slideWidth">100</xen:set>
+		<xen:set var="$captions">true</xen:set>
+		<xen:set var="$items">{$tabsMediaCount}</xen:set> // Any number. Number of images that are visible in the slider.
+		<xen:set var="$noResponsive">0</xen:set> // Set to 0 for responsive, 1 for fixed. Responsive will show more images at a smaller size at narrower browser widths, fixed will keep the number of images set in $items at the same size whatever the browser width.
+	</xen:include>
+</xen:if>]]></replace>
+    </modification>
+    <modification template="xengallery_media_block" modification_key="th_xengalleryMediaBlock_mediaBlock" description="Adds ability to select specified media in media block." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:callback[^>]*>#Us]]></find>
+      <replace><![CDATA[<xen:if is="{$mediaIds}">
+<xen:callback class="ThemeHouse_MediaBlock_Template_XenGalleryCallback" method="getMediaForBlock" params="{xen:array 'mediaIds={$mediaIds}'}" />
+<xen:else />
+${0}
+</xen:if>]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>
